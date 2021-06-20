@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    //spark
+    implementation 'com.sparkjava:spark-core:2.3'
+    implementation 'com.sparkjava:spark-debug-tools:0.5'
+
+    //guice
+    implementation group: 'com.google.inject', name: 'guice', version: '5.0.1'
+
+    //jdbi
+    implementation group: 'org.jdbi', name: 'jdbi', version: '2.78'
+
+    //flyway
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.10.0'
+
+    //jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.12.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.3'
+}
+
+test {
+    useJUnitPlatform()
+}
