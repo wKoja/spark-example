@@ -1,5 +1,16 @@
+buildscript {
+    dependencies {
+        classpath 'mysql:mysql-connector-java:8.0.24'
+    }
+}
+
 plugins {
     id 'java'
+    id 'org.flywaydb.flyway' version '7.10.0'
+}
+
+flyway {
+    url = 'jdbc:mysql://localhost:3306/'
 }
 
 group 'org.example'
@@ -10,6 +21,7 @@ repositories {
 }
 
 dependencies {
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     //spark
