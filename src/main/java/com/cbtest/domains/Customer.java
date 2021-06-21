@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class Customer {
     Integer id;
+    Integer addressId;
     String uuid;
     String name;
     String email;
@@ -20,11 +21,12 @@ public class Customer {
 
     }
 
-    public Customer(Integer id, String uuid, String name,
+    public Customer(Integer id, Integer addressId, String uuid, String name,
                     String email, Date birthDate, String cpf,
                     String gender, Address mainAddress, Address address,
                     Timestamp createdAt, Timestamp updateAt){
         this.id = id;
+        this.addressId = addressId;
         this.uuid = uuid;
         this.name = name;
         this.email = email;
@@ -44,6 +46,14 @@ public class Customer {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Integer addressId) {
+        this.addressId = addressId;
     }
 
     public String getUuid() {
