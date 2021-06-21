@@ -10,7 +10,8 @@ plugins {
 }
 
 flyway {
-    url = 'jdbc:mysql://localhost:3306/'
+    url = 'jdbc:mysql://localhost:3306/test'
+    locations = ['classpath:db/migration']
 }
 
 group 'org.example'
