@@ -34,6 +34,8 @@ dependencies {
 
     //jdbi
     implementation group: 'org.jdbi', name: 'jdbi', version: '2.78'
+    implementation group: 'org.jdbi', name: 'jdbi3-core', version: '3.20.1'
+    implementation group: 'org.jdbi', name: 'jdbi3-sqlobject', version: '3.20.1'
 
     //flyway
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.10.0'

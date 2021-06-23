@@ -23,8 +23,6 @@ public class CustomerService {
 
             list = dao.getAll();
 
-            dao.close();
-
 
         }catch (Exception e){
             e.printStackTrace();
