@@ -15,7 +15,7 @@ public class Customer {
     Date birthDate;
     String cpf;
     String gender;
-    @Nested
+    @Nested("addresses")
     Address mainAddress;
     //sql array
     List<Address> addresses;

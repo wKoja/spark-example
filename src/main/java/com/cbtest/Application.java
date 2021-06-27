@@ -4,7 +4,6 @@ import com.cbtest.controllers.CustomerController;
 import com.cbtest.daos.AddressDao;
 import com.cbtest.daos.CustomerDao;
 import com.cbtest.domains.Customer;
-import com.cbtest.services.CustomerService;
 
 import java.util.List;
 

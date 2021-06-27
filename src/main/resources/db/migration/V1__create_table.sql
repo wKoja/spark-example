@@ -1,5 +1,5 @@
 create table ADDRESSES(
-    address_id int not null AUTO_INCREMENT PRIMARY KEY,
+    id_address int not null AUTO_INCREMENT PRIMARY KEY,
     state text not null,
     city text not null,
     neighborhood text not null,
@@ -22,10 +22,10 @@ create table CUSTOMERS(
     gender varchar(1),
     created_at timestamp,
     updated_at timestamp,
-    CONSTRAINT fk_address FOREIGN KEY (address_id) REFERENCES ADDRESSES(address_id)
+    CONSTRAINT fk_address FOREIGN KEY (address_id) REFERENCES ADDRESSES(id_address)
 );
 
-insert into ADDRESSES (address_id, state, city,
+insert into ADDRESSES (id_address, state, city,
                       neighborhood, zipcode, street,
                       number, additional_info, main)
                       VALUES (1, 'SC', 'Floripa',

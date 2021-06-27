@@ -1,6 +1,7 @@
 package com.cbtest.controllers;
 
 import com.cbtest.daos.CustomerDao;
+import com.cbtest.domains.Address;
 import com.cbtest.domains.Customer;
 import com.cbtest.utils.JsonUtil;
 import org.jdbi.v3.core.Jdbi;
@@ -19,6 +20,7 @@ public class CustomerController {
             String mapJson = JsonUtil.getMapJson(request.queryMap());
         }
         List<Customer> customers = new ArrayList<Customer>();
+//        Map<Customer, Address> customers = new HashMap<>();
         String jsonString = new String();
 
         try{
@@ -29,6 +31,7 @@ public class CustomerController {
             });
 
             jsonString = JsonUtil.listToJson(customers);
+//            jsonString = JsonUtil.hashMapToJson(customers);
 
         } catch (Exception e){
             e.printStackTrace();

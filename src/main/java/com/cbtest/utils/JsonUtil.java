@@ -21,6 +21,16 @@ public class JsonUtil {
         return new String(data);
     }
 
+    public static String hashMapToJson(Map<?,?> map) throws IOException{
+        final ByteArrayOutputStream output = new ByteArrayOutputStream();
+        final ObjectMapper mapper = new ObjectMapper();
+
+        mapper.writeValue(output, map);
+        final byte[] data = output.toByteArray();
+
+        return new String(data);
+    }
+
     public static <T> String getMapJson(QueryParamsMap queryMap) throws IOException{
         Map<String, String[]> map = queryMap.toMap();
         List<Map<String, String[]>> mapList = new ArrayList<Map<String, String[]>>();
