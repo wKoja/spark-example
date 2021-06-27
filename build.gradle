@@ -11,6 +11,7 @@ plugins {
 
 flyway {
     url = 'jdbc:mysql://localhost:3306/test'
+    user= 'test'
     locations = ['classpath:db/migration']
 }
 
@@ -22,6 +23,8 @@ repositories {
 }
 
 dependencies {
+
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
@@ -44,6 +47,14 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.12.3'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.3'
+    //mysql connector
+    implementation 'mysql:mysql-connector-java:8.0.24'
+
+    //jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.6.7.5'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.12.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.3'
+
 }
 
 test {

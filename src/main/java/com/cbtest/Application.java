@@ -18,6 +18,7 @@ public class Application {
 
        //path() não está funcionando. Refatorar depois
 
+
         port(8080);
 
         get("/customers", CustomerController.getAll);

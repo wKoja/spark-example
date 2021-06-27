@@ -1,19 +1,24 @@
 package com.cbtest.domains;
 
+import org.jdbi.v3.core.mapper.Nested;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
+
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 public class Customer {
     Integer id;
-    Integer addressId;
     String uuid;
     String name;
     String email;
     Date birthDate;
     String cpf;
     String gender;
+    @Nested
     Address mainAddress;
-    Address address;
+    //sql array
+    List<Address> addresses;
     Timestamp createdAt;
     Timestamp updateAt;
 
@@ -21,12 +26,11 @@ public class Customer {
 
     }
 
-    public Customer(Integer id, Integer addressId, String uuid, String name,
+    public Customer(Integer id, String uuid, String name,
                     String email, Date birthDate, String cpf,
-                    String gender, Address mainAddress, Address address,
+                    String gender, Address mainAddress, List<Address> addresses,
                     Timestamp createdAt, Timestamp updateAt){
         this.id = id;
-        this.addressId = addressId;
         this.uuid = uuid;
         this.name = name;
         this.email = email;
@@ -34,7 +38,7 @@ public class Customer {
         this.cpf = cpf;
         this.gender = gender;
         this.mainAddress = mainAddress;
-        this.address = address;
+        this.addresses = addresses;
         this.createdAt = createdAt;
         this.updateAt = updateAt;
     }
@@ -46,14 +50,6 @@ public class Customer {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(Integer addressId) {
-        this.addressId = addressId;
     }
 
     public String getUuid() {
@@ -100,10 +96,6 @@ public class Customer {
         return gender;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
     public Address getMainAddress() {
         return mainAddress;
     }
@@ -112,12 +104,16 @@ public class Customer {
         this.mainAddress = mainAddress;
     }
 
-    public Address getAddress() {
-        return address;
+    public List<Address> getAddresses() {
+        return addresses;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public Timestamp getCreatedAt() {
@@ -135,4 +131,5 @@ public class Customer {
     public void setUpdateAt(Timestamp updateAt) {
         this.updateAt = updateAt;
     }
+
 }

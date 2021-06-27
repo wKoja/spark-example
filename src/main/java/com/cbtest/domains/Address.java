@@ -1,16 +1,17 @@
 package com.cbtest.domains;
 
-import java.io.Serializable;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class Address {
-
-    Integer id;
+    Integer address_id;
     String state;
     String city;
     String neighborhood;
+    @ColumnName("zipcode")
     String zipCode;
     String street;
     String number;
+    @ColumnName("additional_info")
     String additionalInformation;
     Boolean main;
 
@@ -18,11 +19,11 @@ public class Address {
 
     }
 
-    public Address(Integer id, String state, String city,
+    public Address(Integer address_id, String state, String city,
                    String neighborhood, String zipCode, String street,
                    String number, String additionalInformation,
                    Boolean main){
-        this.id = id;
+        this.address_id = address_id;
         this.state = state;
         this.city = city;
         this.neighborhood = neighborhood;
@@ -34,12 +35,12 @@ public class Address {
     }
 
     //getters & setters
-    public Integer getId() {
-        return id;
+    public Integer getAddressId() {
+        return address_id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setAddressId(Integer address_id) {
+        this.address_id = address_id;
     }
 
     public String getState() {
