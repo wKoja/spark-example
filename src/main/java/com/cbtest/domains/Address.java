@@ -3,7 +3,7 @@ package com.cbtest.domains;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class Address {
-    Integer address_id;
+    Integer addressId;
     String state;
     String city;
     String neighborhood;
@@ -19,11 +19,11 @@ public class Address {
 
     }
 
-    public Address(Integer address_id, String state, String city,
+    public Address(Integer addressId, String state, String city,
                    String neighborhood, String zipCode, String street,
                    String number, String additionalInformation,
                    Boolean main){
-        this.address_id = address_id;
+        this.addressId = addressId;
         this.state = state;
         this.city = city;
         this.neighborhood = neighborhood;
@@ -36,11 +36,11 @@ public class Address {
 
     //getters & setters
     public Integer getAddressId() {
-        return address_id;
+        return addressId;
     }
 
-    public void setAddressId(Integer address_id) {
-        this.address_id = address_id;
+    public void setAddressId(Integer addressId) {
+        this.addressId = addressId;
     }
 
     public String getState() {

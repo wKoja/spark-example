@@ -8,12 +8,13 @@ import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.UseRowReducer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public interface CustomerDao{
 
-    @SqlQuery("SELECT * FROM CUSTOMERS LEFT OUTER JOIN ADDRESSES A on A.id_address = CUSTOMERS.address_id")
+    @SqlQuery("SELECT CUSTOMERS.*, ADDRESSES.* FROM CUSTOMERS, ADDRESSES INNER JOIN CUSTOMERS C on ADDRESSES.customer_id = C.id ")
     @RegisterBeanMapper(Customer.class)
     @RegisterBeanMapper(Address.class)
     @UseRowReducer(CustomerAddressReducer.class)
@@ -23,12 +24,20 @@ public interface CustomerDao{
 
 
     class CustomerAddressReducer implements LinkedHashMapRowReducer<Integer, Customer> {
-
+        List<Address> nonMainAddresses = new ArrayList<>();
         public void accumulate(Map<Integer, Customer> map, RowView rowView){
             Customer c = map.computeIfAbsent(rowView.getColumn("id", Integer.class),
                     id -> rowView.getRow(Customer.class));
             if(rowView.getColumn("address_id", Integer.class) != null){
-                c.setMainAddress(rowView.getRow(Address.class));
+                Address addressRow = rowView.getRow(Address.class);
+                if(addressRow.getMain()){
+                    c.setMainAddress(rowView.getRow(Address.class));
+                }else{
+                    nonMainAddresses.add(rowView.getRow(Address.class));
+                }
+            }
+            if(!nonMainAddresses.isEmpty()){
+                c.setAddresses(nonMainAddresses);
             }
         }
     }
