@@ -1,4 +1,4 @@
-package com.cbtest.controllers;
+package com.cbtest.controller;
 
 public class AddressController {
 }

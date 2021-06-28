@@ -1,7 +1,6 @@
-package com.cbtest.domains;
+package com.cbtest.domain;
 
 import org.jdbi.v3.core.mapper.Nested;
-import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.sql.Timestamp;
 import java.util.Date;

@@ -1,6 +1,6 @@
-package com.cbtest.daos;
+package com.cbtest.dao;
 
-import com.cbtest.domains.Address;
+import com.cbtest.domain.Address;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 
 import java.util.List;

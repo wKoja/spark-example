@@ -1,4 +1,4 @@
-package com.cbtest.utils;
+package com.cbtest.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import spark.QueryParamsMap;
@@ -21,6 +21,7 @@ public class JsonUtil {
         return new String(data);
     }
 
+    //trying some stuff out, didn't actually put any work into this
     public static String hashMapToJson(Map<?,?> map) throws IOException{
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
         final ObjectMapper mapper = new ObjectMapper();
