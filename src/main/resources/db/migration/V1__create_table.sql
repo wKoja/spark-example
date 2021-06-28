@@ -4,8 +4,8 @@ create table CUSTOMERS(
     name varchar(150) not null,
     email varchar(150),
     birth_date date,
-    cpf varchar(11) not null,
-    gender varchar(1),
+    cpf varchar(14) not null,
+    gender varchar(15),
     created_at timestamp,
     updated_at timestamp
 );

@@ -1,17 +1,20 @@
 package com.cbtest.service;
 
+import com.cbtest.dao.AddressDao;
 import com.cbtest.dao.CustomerDao;
 import com.cbtest.db.Connection;
+import com.cbtest.domain.Address;
 import com.cbtest.domain.Customer;
+import com.cbtest.dto.AddressDTO;
+import com.cbtest.dto.CustomerDTO;
 import com.cbtest.util.JsonUtil;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.eclipse.jetty.websocket.api.StatusCode;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import spark.QueryParamsMap;
-import spark.Request;
-import spark.Response;
 import spark.Route;
 
-import java.io.IOException;
+import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +61,30 @@ public class CustomerService {
             jsonString = JsonUtil.listToJson(customers);
             return jsonString;
         } catch (Exception e){
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    };
+
+    public static Route insertCustomer = (request, response) -> {
+        try{
+            CustomerDTO dto = JsonUtil.jsonToClass(request.body(), CustomerDTO.class);
+            AddressDTO addressDTO = dto.getAddressDTO();
+
+            //insert customer
+            Jdbi jdbi = Connection.connect();
+            Integer customerId = jdbi.withExtension(CustomerDao.class, dao ->{
+                return dao.insert(dto);
+            });
+
+            addressDTO.setCustomerId(customerId);
+
+            //then insert address
+            jdbi.withExtension(AddressDao.class, dao ->{
+                return dao.insert(addressDTO);
+            });
+            return "Inserido com sucesso.";
+        }catch(Exception e){
             e.printStackTrace();
             return e.getMessage();
         }

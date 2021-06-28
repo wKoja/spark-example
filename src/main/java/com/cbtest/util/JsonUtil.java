@@ -30,7 +30,14 @@ public class JsonUtil {
         final byte[] data = output.toByteArray();
 
         return new String(data);
+    }
 
+    public static <T> T jsonToClass(String jsonString, Class<T> type) throws IOException{
+        ObjectMapper mapper = new ObjectMapper();
+
+        T object = mapper.readValue(jsonString, type);
+
+        return object;
     }
 
     //trying some stuff out, didn't actually put any work into this

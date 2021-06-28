@@ -1,30 +1,24 @@
-package com.cbtest.domain;
+package com.cbtest.dto;
 
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
-public class Address {
-    Integer addressId;
-    Integer customerId;
-    String state;
-    String city;
-    String neighborhood;
-    @ColumnName("zipcode")
-    String zipCode;
-    String street;
-    String number;
-    @ColumnName("additional_info")
-    String additionalInformation;
-    Boolean main;
+public class AddressDTO {
+    public Integer customerId;
+    public String state;
+    public String city;
+    public String neighborhood;
+    public String zipCode;
+    public String street;
+    public String number;
+    public String additionalInformation;
+    public Boolean main;
 
-    public Address(){
+    public AddressDTO(){
 
     }
 
-    public Address(Integer addressId, Integer customerId, String state, String city,
-                   String neighborhood, String zipCode, String street,
-                   String number, String additionalInformation,
-                   Boolean main){
-        this.addressId = addressId;
+    public AddressDTO(Integer customerId, String state, String city, String neighborhood,
+                      String zipCode, String street, String number, String additionalInformation, Boolean main) {
         this.customerId = customerId;
         this.state = state;
         this.city = city;
@@ -34,15 +28,6 @@ public class Address {
         this.number = number;
         this.additionalInformation = additionalInformation;
         this.main = main;
-    }
-
-    //getters & setters
-    public Integer getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(Integer addressId) {
-        this.addressId = addressId;
     }
 
     public Integer getCustomerId() {
@@ -116,5 +101,4 @@ public class Address {
     public void setMain(Boolean main) {
         this.main = main;
     }
-
 }
