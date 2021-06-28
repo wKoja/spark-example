@@ -17,24 +17,46 @@ import java.util.List;
 
 public class CustomerService {
 
+//    public static Route insertCustomer = (request, response) -> {
+//    }
+
+    public static Route getCustomerById = (request, response) -> {
+        try {
+            long id = Long.parseLong(request.params(":id"));
+            String jsonString = new String();
+            Customer customer = new Customer();
+
+            Jdbi jdbi = Connection.connect();
+
+            customer = jdbi.withExtension(CustomerDao.class, dao ->{
+                return dao.getCustomerById(id);
+            });
+            jsonString = JsonUtil.objectToJson(customer);
+            return jsonString;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    };
+
     public static Route getAllCustomers = (request, response) -> {
         try{
-        //TODO: dynamic queries for url parameters. Do it after finishing the endpoints
-        QueryParamsMap queryMap = request.queryMap();
-        if(request.queryMap().hasKeys()){
-            String mapJson = JsonUtil.getMapJson(request.queryMap());
-        }
+            //TODO: dynamic queries for url parameters. Do it after finishing the endpoints
+            QueryParamsMap queryMap = request.queryMap();
+            if(request.queryMap().hasKeys()){
+                String mapJson = JsonUtil.getMapJson(request.queryMap());
+            }
 
-        List<Customer> customers = new ArrayList<Customer>();
-        String jsonString = new String();
+            List<Customer> customers = new ArrayList<Customer>();
+            String jsonString = new String();
 
-        Jdbi jdbi = Connection.connect();
-        customers = jdbi.withExtension(CustomerDao.class, dao -> {
-            return dao.getAll();
-        });
-        jsonString = JsonUtil.listToJson(customers);
-
-        return jsonString;
+            Jdbi jdbi = Connection.connect();
+            customers = jdbi.withExtension(CustomerDao.class, dao -> {
+                return dao.getAllCustomers();
+            });
+            jsonString = JsonUtil.listToJson(customers);
+            return jsonString;
         } catch (Exception e){
             e.printStackTrace();
             return e.getMessage();

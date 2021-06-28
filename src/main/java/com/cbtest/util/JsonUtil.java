@@ -21,6 +21,18 @@ public class JsonUtil {
         return new String(data);
     }
 
+    public static <T> String objectToJson(T object) throws IOException{
+
+        final ByteArrayOutputStream output = new ByteArrayOutputStream();
+        final ObjectMapper mapper = new ObjectMapper();
+
+        mapper.writeValue(output, object);
+        final byte[] data = output.toByteArray();
+
+        return new String(data);
+
+    }
+
     //trying some stuff out, didn't actually put any work into this
     public static String hashMapToJson(Map<?,?> map) throws IOException{
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
