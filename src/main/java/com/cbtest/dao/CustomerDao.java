@@ -21,7 +21,7 @@ public interface CustomerDao{
     @UseRowReducer(CustomerAddressReducer.class)
     List<Customer> getAllCustomers();
 
-    @SqlQuery("SELECT CUSTOMERS.*, ADDRESSES.* FROM CUSTOMERS, ADDRESSES INNER JOIN CUSTOMERS C on ADDRESSES.customer_id = C.id WHERE C.id = ?")
+    @SqlQuery("SELECT CUSTOMERS.*, ADDRESSES.* FROM CUSTOMERS LEFT OUTER JOIN ADDRESSES ON CUSTOMERS.id= ADDRESSES.customer_id WHERE CUSTOMERS.id = ?")
     @RegisterBeanMapper(Customer.class)
     @RegisterBeanMapper(Address.class)
     @UseRowReducer(CustomerAddressReducer.class)
