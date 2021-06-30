@@ -20,24 +20,25 @@ import java.util.List;
 
 public class CustomerService {
 
-//    public static Route insertCustomer = (request, response) -> {
-//    }
+    public static Route insertCustomer = (request, response) -> {
+        try{
+            CustomerDTO dto = JsonUtil.jsonToClass(request.body(), CustomerDTO.class);
+            AddressDTO addressDTO = dto.getAddressDTO();
 
-    public static Route getCustomerById = (request, response) -> {
-        try {
-            long id = Long.parseLong(request.params(":id"));
-            String jsonString = new String();
-            Customer customer = new Customer();
-
+            //insert customer
             Jdbi jdbi = Connection.connect();
-
-            customer = jdbi.withExtension(CustomerDao.class, dao ->{
-                return dao.getCustomerById(id);
+            long customerId = jdbi.withExtension(CustomerDao.class, dao ->{
+                return dao.insert(dto);
             });
-            jsonString = JsonUtil.objectToJson(customer);
-            return jsonString;
 
-        }catch (Exception e){
+            addressDTO.setCustomerId(customerId);
+
+            //then insert address
+            jdbi.withExtension(AddressDao.class, dao ->{
+                return dao.insert(addressDTO);
+            });
+            return "Inserido com sucesso.";
+        }catch(Exception e){
             e.printStackTrace();
             return e.getMessage();
         }
@@ -66,27 +67,73 @@ public class CustomerService {
         }
     };
 
-    public static Route insertCustomer = (request, response) -> {
-        try{
-            CustomerDTO dto = JsonUtil.jsonToClass(request.body(), CustomerDTO.class);
-            AddressDTO addressDTO = dto.getAddressDTO();
+    public static Route getCustomerById = (request, response) -> {
+        try {
+            long id = Long.parseLong(request.params(":id"));
+            String jsonString = new String();
+            Customer customer = new Customer();
 
-            //insert customer
             Jdbi jdbi = Connection.connect();
-            Integer customerId = jdbi.withExtension(CustomerDao.class, dao ->{
-                return dao.insert(dto);
-            });
 
+            customer = jdbi.withExtension(CustomerDao.class, dao ->{
+                return dao.getCustomerById(id);
+            });
+            jsonString = JsonUtil.objectToJson(customer);
+            return jsonString;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    };
+
+    public static Route updateCustomer = (request, response) -> {
+        try{
+            long customerId = Integer.parseInt(request.params(":id"));
+            CustomerDTO customerDTO = JsonUtil.jsonToClass(request.body(), CustomerDTO.class);
+            AddressDTO addressDTO = customerDTO.getAddressDTO();
             addressDTO.setCustomerId(customerId);
 
-            //then insert address
-            jdbi.withExtension(AddressDao.class, dao ->{
-                return dao.insert(addressDTO);
+            Jdbi jdbi = Connection.connect();
+
+            //update customer
+            jdbi.withExtension(CustomerDao.class, dao ->{
+                return dao.update(customerDTO, customerId);
             });
-            return "Inserido com sucesso.";
+
+            //then update address
+            jdbi.withExtension(AddressDao.class, dao -> {
+                return dao.update(addressDTO);
+            });
+
+            return "Atualizado com sucesso.";
         }catch(Exception e){
             e.printStackTrace();
             return e.getMessage();
         }
     };
+
+    public static Route deleteCustomer = (request, response) -> {
+        try{
+            long customerId = Integer.parseInt(request.params(":id"));
+
+            Jdbi jdbi = Connection.connect();
+
+            jdbi.withExtension(AddressDao.class, dao ->{
+                dao.delete(customerId);
+                return 0;
+            });
+
+            jdbi.withExtension(CustomerDao.class, dao ->{
+                dao.delete(customerId);
+                return 0;
+            });
+
+            return "Deletado com sucesso.";
+        }catch(Exception e){
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    };
+
 }

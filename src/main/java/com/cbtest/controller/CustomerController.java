@@ -13,24 +13,12 @@ public class CustomerController {
         post("/customers", service.insertCustomer);
         get("/customers", service.getAllCustomers);
         get("/customers/:id", service.getCustomerById);
+        put("/customers/:id", service.updateCustomer);
+        delete("/customers/:id", service.deleteCustomer);
 
 
 
     }
-
-//    public static Route getAll = (request, response) -> {
-//        try{
-//            return CustomerService.getAllCustomers(request, response);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return e.getMessage();
-//        }
-//    };
-
-    public static Route insert = ((request, response) -> {
-
-        return 0;
-    });
 
 
 }

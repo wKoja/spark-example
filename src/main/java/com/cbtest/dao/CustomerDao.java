@@ -5,6 +5,7 @@ import com.cbtest.domain.Customer;
 import com.cbtest.dto.CustomerDTO;
 import com.cbtest.util.CustomerAddressReducer;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindFields;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -30,7 +31,14 @@ public interface CustomerDao{
     @SqlUpdate("INSERT INTO CUSTOMERS (id, uuid, name, email, birth_date, cpf, gender, created_at, updated_at) " +
             "VALUES (null, UUID(),:name, :email, :birthDate,:cpf,:gender, NOW(), null)")
     @GetGeneratedKeys("id")
-    Integer insert(@BindFields CustomerDTO customer);
+    long insert(@BindFields CustomerDTO customer);
+
+    @SqlUpdate("UPDATE CUSTOMERS SET name = :name, email = :email, birth_date = :birthDate, cpf = :cpf, gender = :gender, updated_at = NOW() WHERE id = ?")
+    @GetGeneratedKeys("id")
+    long update(@BindFields CustomerDTO customer, @Bind("id") long id);
+
+    @SqlUpdate("DELETE FROM CUSTOMERS WHERE id = ?")
+    void delete(long id);
 
 
 }

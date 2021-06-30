@@ -3,7 +3,7 @@ package com.cbtest.dto;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class AddressDTO {
-    public Integer customerId;
+    public long customerId;
     public String state;
     public String city;
     public String neighborhood;
@@ -17,7 +17,7 @@ public class AddressDTO {
 
     }
 
-    public AddressDTO(Integer customerId, String state, String city, String neighborhood,
+    public AddressDTO(long customerId, String state, String city, String neighborhood,
                       String zipCode, String street, String number, String additionalInformation, Boolean main) {
         this.customerId = customerId;
         this.state = state;
@@ -30,11 +30,11 @@ public class AddressDTO {
         this.main = main;
     }
 
-    public Integer getCustomerId() {
+    public long getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(long customerId) {
         this.customerId = customerId;
     }
 

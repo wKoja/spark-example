@@ -3,6 +3,7 @@ package com.cbtest.dto;
 import com.cbtest.dto.AddressDTO;
 
 public class CustomerDTO {
+    public long id;
     public String name;
     public String email;
     public String birthDate;
