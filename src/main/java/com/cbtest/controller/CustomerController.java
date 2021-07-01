@@ -15,10 +15,6 @@ public class CustomerController {
         get("/customers/:id", service.getCustomerById);
         put("/customers/:id", service.updateCustomer);
         delete("/customers/:id", service.deleteCustomer);
-
-
-
     }
-
 
 }

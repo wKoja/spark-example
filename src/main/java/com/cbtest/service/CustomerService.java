@@ -104,7 +104,7 @@ public class CustomerService {
 
             //then update address
             jdbi.withExtension(AddressDao.class, dao -> {
-                dao.update(addressDTO);
+                dao.updateByCustomerId(addressDTO, customerId);
                 return 0;
             });
 
@@ -122,7 +122,7 @@ public class CustomerService {
             Jdbi jdbi = Connection.connect();
 
             jdbi.withExtension(AddressDao.class, dao ->{
-                dao.delete(customerId);
+                dao.deleteAllByCustomerId(customerId);
                 return 0;
             });
 

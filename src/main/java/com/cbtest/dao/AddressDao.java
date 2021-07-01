@@ -2,6 +2,7 @@ package com.cbtest.dao;
 
 import com.cbtest.domain.Address;
 import com.cbtest.dto.AddressDTO;
+import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindFields;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
@@ -17,11 +18,34 @@ public interface AddressDao {
     @GetGeneratedKeys("id")
     long insert(@BindFields AddressDTO address);
 
+    @SqlQuery("SELECT * FROM ADDRESSES WHERE customer_id = ?")
+    @RegisterBeanMapper(Address.class)
+    List<Address> getAllCustomerAddresses(long id);
+
+    @SqlQuery("SELECT * FROM ADDRESSES WHERE customer_id = :customerId AND address_id = :addressId")
+    @RegisterBeanMapper(Address.class)
+    Address getCustomerAddressById(@Bind("customerId") long customerId, @Bind("addressId") long addressId);
+
+    @SqlQuery("SELECT * FROM ADDRESSES WHERE customer_id = :customerId AND main = true")
+    @RegisterBeanMapper(Address.class)
+    Address getMainAddress(@Bind("customerId") long customerId);
+
+    @SqlUpdate("UPDATE ADDRESSES SET main = false WHERE customer_id = :customerId AND main = true")
+    @RegisterBeanMapper(Address.class)
+    void setMainAddressFalse(@Bind("customerId") long customerId);
+
     @SqlUpdate("UPDATE ADDRESSES SET state = :state, city = :city, neighborhood = :neighborhood, zipcode = :zipCode, street = :street," +
             " number = :number, additional_info = :additionalInformation, main = :main WHERE customer_id = :customerId")
-    void update(@BindFields AddressDTO address);
+    void updateByCustomerId(@BindFields AddressDTO address, @Bind("customerId") long customerId);
+
+    @SqlUpdate("UPDATE ADDRESSES SET state = :state, city = :city, neighborhood = :neighborhood, zipcode = :zipCode, street = :street," +
+            " number = :number, additional_info = :additionalInformation, main = :main WHERE address_id = :addressId")
+    void updateById(@BindFields AddressDTO address, @Bind("addressId") long addressId);
 
     @SqlUpdate("DELETE FROM ADDRESSES WHERE customer_id = ?")
-    void delete(long id);
+    void deleteAllByCustomerId(long customerId);
+
+    @SqlUpdate("DELETE FROM ADDRESSES WHERE customer_id = ? AND address_id = ?")
+    void delete(long customerId, long addressId);
 
 }
