@@ -19,8 +19,7 @@ public interface AddressDao {
 
     @SqlUpdate("UPDATE ADDRESSES SET state = :state, city = :city, neighborhood = :neighborhood, zipcode = :zipCode, street = :street," +
             " number = :number, additional_info = :additionalInformation, main = :main WHERE customer_id = :customerId")
-    @GetGeneratedKeys("id")
-    long update(@BindFields AddressDTO address);
+    void update(@BindFields AddressDTO address);
 
     @SqlUpdate("DELETE FROM ADDRESSES WHERE customer_id = ?")
     void delete(long id);

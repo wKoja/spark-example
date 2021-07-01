@@ -33,9 +33,8 @@ public interface CustomerDao{
     @GetGeneratedKeys("id")
     long insert(@BindFields CustomerDTO customer);
 
-    @SqlUpdate("UPDATE CUSTOMERS SET name = :name, email = :email, birth_date = :birthDate, cpf = :cpf, gender = :gender, updated_at = NOW() WHERE id = ?")
-    @GetGeneratedKeys("id")
-    long update(@BindFields CustomerDTO customer, @Bind("id") long id);
+    @SqlUpdate("UPDATE CUSTOMERS SET name = :name, email = :email, birth_date = :birthDate, cpf = :cpf, gender = :gender, updated_at = NOW() WHERE id = :id")
+    void update(@BindFields CustomerDTO customer, @Bind("id") long id);
 
     @SqlUpdate("DELETE FROM CUSTOMERS WHERE id = ?")
     void delete(long id);

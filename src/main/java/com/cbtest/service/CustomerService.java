@@ -98,12 +98,14 @@ public class CustomerService {
 
             //update customer
             jdbi.withExtension(CustomerDao.class, dao ->{
-                return dao.update(customerDTO, customerId);
+                dao.update(customerDTO, customerId);
+                return 0;
             });
 
             //then update address
             jdbi.withExtension(AddressDao.class, dao -> {
-                return dao.update(addressDTO);
+                dao.update(addressDTO);
+                return 0;
             });
 
             return "Atualizado com sucesso.";
@@ -135,5 +137,4 @@ public class CustomerService {
             return e.getMessage();
         }
     };
-
 }
