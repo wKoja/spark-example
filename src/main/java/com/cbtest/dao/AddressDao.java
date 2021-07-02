@@ -20,19 +20,19 @@ public interface AddressDao {
 
     @SqlQuery("SELECT * FROM ADDRESSES WHERE customer_id = ?")
     @RegisterBeanMapper(Address.class)
-    List<Address> getAllCustomerAddresses(long id);
+    List<Address> findAllCustomerAddresses(long id);
 
     @SqlQuery("SELECT * FROM ADDRESSES WHERE customer_id = :customerId AND address_id = :addressId")
     @RegisterBeanMapper(Address.class)
-    Address getCustomerAddressById(@Bind("customerId") long customerId, @Bind("addressId") long addressId);
+    Address findCustomerAddressById(@Bind("customerId") long customerId, @Bind("addressId") long addressId);
 
     @SqlQuery("SELECT * FROM ADDRESSES WHERE customer_id = :customerId AND main = true")
     @RegisterBeanMapper(Address.class)
-    Address getMainAddress(@Bind("customerId") long customerId);
+    Address findMainAddressByCustomerId(@Bind("customerId") long customerId);
 
     @SqlUpdate("UPDATE ADDRESSES SET main = false WHERE customer_id = :customerId AND main = true")
     @RegisterBeanMapper(Address.class)
-    void setMainAddressFalse(@Bind("customerId") long customerId);
+    void setMainAddressFalseByCustomerId(@Bind("customerId") long customerId);
 
     @SqlUpdate("UPDATE ADDRESSES SET state = :state, city = :city, neighborhood = :neighborhood, zipcode = :zipCode, street = :street," +
             " number = :number, additional_info = :additionalInformation, main = :main WHERE customer_id = :customerId")
@@ -46,6 +46,6 @@ public interface AddressDao {
     void deleteAllByCustomerId(long customerId);
 
     @SqlUpdate("DELETE FROM ADDRESSES WHERE customer_id = ? AND address_id = ?")
-    void delete(long customerId, long addressId);
+    void deleteById(long customerId, long addressId);
 
 }

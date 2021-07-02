@@ -1,7 +1,5 @@
 package com.cbtest.dto;
 
-import com.cbtest.dto.AddressDTO;
-
 public class CustomerDTO {
     public long id;
     public String name;

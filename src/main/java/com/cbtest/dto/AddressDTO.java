@@ -1,7 +1,5 @@
 package com.cbtest.dto;
 
-import org.jdbi.v3.core.mapper.reflect.ColumnName;
-
 public class AddressDTO {
     public long customerId;
     public String state;

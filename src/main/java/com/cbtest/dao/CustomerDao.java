@@ -16,17 +16,21 @@ import java.util.List;
 
 public interface CustomerDao{
 
-    @SqlQuery("SELECT CUSTOMERS.*, ADDRESSES.* FROM CUSTOMERS, ADDRESSES INNER JOIN CUSTOMERS C on ADDRESSES.customer_id = C.id ")
+    @SqlQuery("SELECT CUSTOMERS.*, ADDRESSES.* FROM CUSTOMERS LEFT OUTER JOIN ADDRESSES on CUSTOMERS.id = ADDRESSES.customer_id")
     @RegisterBeanMapper(Customer.class)
     @RegisterBeanMapper(Address.class)
     @UseRowReducer(CustomerAddressReducer.class)
-    List<Customer> getAllCustomers();
+    List<Customer> findAllCustomers();
 
     @SqlQuery("SELECT CUSTOMERS.*, ADDRESSES.* FROM CUSTOMERS LEFT OUTER JOIN ADDRESSES ON CUSTOMERS.id= ADDRESSES.customer_id WHERE CUSTOMERS.id = ?")
     @RegisterBeanMapper(Customer.class)
     @RegisterBeanMapper(Address.class)
     @UseRowReducer(CustomerAddressReducer.class)
-    Customer getCustomerById(long id);
+    Customer findById(long id);
+
+    @SqlQuery("SELECT * FROM CUSTOMERS WHERE cpf = :cpf")
+    @RegisterBeanMapper(Customer.class)
+    Customer findByCPF(@Bind("cpf") String cpf);
 
     @SqlUpdate("INSERT INTO CUSTOMERS (id, uuid, name, email, birth_date, cpf, gender, created_at, updated_at) " +
             "VALUES (null, UUID(),:name, :email, :birthDate,:cpf,:gender, NOW(), null)")
@@ -34,10 +38,10 @@ public interface CustomerDao{
     long insert(@BindFields CustomerDTO customer);
 
     @SqlUpdate("UPDATE CUSTOMERS SET name = :name, email = :email, birth_date = :birthDate, cpf = :cpf, gender = :gender, updated_at = NOW() WHERE id = :id")
-    void update(@BindFields CustomerDTO customer, @Bind("id") long id);
+    void updateById(@BindFields CustomerDTO customer, @Bind("id") long id);
 
     @SqlUpdate("DELETE FROM CUSTOMERS WHERE id = ?")
-    void delete(long id);
+    void deleteById(long id);
 
 
 }

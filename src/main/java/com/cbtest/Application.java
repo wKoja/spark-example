@@ -5,7 +5,7 @@ import com.cbtest.controller.CustomerController;
 import com.cbtest.service.AddressService;
 import com.cbtest.service.CustomerService;
 
-import static spark.Spark.*;
+import static spark.Spark.port;
 
 public class Application {
 

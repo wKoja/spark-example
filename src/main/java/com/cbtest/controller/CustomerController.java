@@ -1,9 +1,6 @@
 package com.cbtest.controller;
 
 import com.cbtest.service.CustomerService;
-import spark.Request;
-import spark.Response;
-import spark.Route;
 
 import static spark.Spark.*;
 

@@ -1,21 +1,28 @@
 package com.cbtest.service;
 
 import com.cbtest.dao.AddressDao;
+import com.cbtest.dao.CustomerDao;
 import com.cbtest.db.Connection;
 import com.cbtest.domain.Address;
+import com.cbtest.domain.Customer;
+import com.cbtest.dto.APIResponseDTO;
 import com.cbtest.dto.AddressDTO;
+import com.cbtest.enums.MessagesEnum;
+import com.cbtest.enums.ResponseCodeEnum;
+import com.cbtest.util.GeneralUtil;
 import com.cbtest.util.JsonUtil;
-import org.checkerframework.checker.units.qual.A;
+import com.google.inject.Inject;
 import org.jdbi.v3.core.Jdbi;
 import spark.Route;
 
-import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddressService {
 
+
     public static Route insertAddress = (request, response) -> {
+        APIResponseDTO APIResponse = new APIResponseDTO();
         try {
             long customerId = Long.parseLong(request.params(":id"));
             AddressDTO addressDTO = JsonUtil.jsonToClass(request.body(), AddressDTO.class);
@@ -23,26 +30,41 @@ public class AddressService {
 
             Jdbi jdbi = Connection.connect();
 
+            Customer customer = jdbi.withExtension(CustomerDao.class, dao ->{
+                return dao.findById(customerId);
+            });
+
+            if(customer == null || GeneralUtil.isEmpty(customer)){
+                APIResponse.setCode(ResponseCodeEnum.CREATE_ADDRESS.getCode());
+                APIResponse.setDescription(MessagesEnum.CUSTOMER_DOES_NOT_EXIST.getMessage());
+                return JsonUtil.objectToJson(APIResponse);
+            }
+
+            //if the incoming address is the new main address
+            //set the current main one to non-main
             if(addressDTO.getMain()){
-                Address address =  jdbi.withExtension(AddressDao.class, dao -> {
-                    return dao.getMainAddress(customerId);
+                jdbi.withExtension(AddressDao.class, dao ->{
+                    dao.setMainAddressFalseByCustomerId(customerId);
+                    return 0;
                 });
-                if(address != null){
-                    throw new RuntimeException("Não é permitido que um cliente tenha mais de um endereço principal.");
-                }
             }
 
             jdbi.withExtension(AddressDao.class, dao ->{
                 return dao.insert(addressDTO);
             });
-            return "Endereço inserido com sucesso.";
+            APIResponse.setCode(ResponseCodeEnum.CREATE_ADDRESS.getCode());
+            APIResponse.setDescription(MessagesEnum.INSERT_SUCCESS.getMessage());
+            return JsonUtil.objectToJson(APIResponse);
         }catch (Exception e){
             e.printStackTrace();
-            return e.getMessage();
+            APIResponse.setCode(ResponseCodeEnum.CREATE_ADDRESS.getCode());
+            APIResponse.setDescription(e.getMessage());
+            return JsonUtil.objectToJson(APIResponse);
         }
     };
 
     public static Route getAllCustomerAddresses = (request, response) -> {
+        APIResponseDTO APIResponse = new APIResponseDTO();
         try{
 
             List<Address> addresses = new ArrayList<>();
@@ -52,18 +74,21 @@ public class AddressService {
             Jdbi jdbi = Connection.connect();
 
             addresses = jdbi.withExtension(AddressDao.class, dao ->{
-                return dao.getAllCustomerAddresses(customerId);
+                return dao.findAllCustomerAddresses(customerId);
             });
             jsonString = JsonUtil.listToJson(addresses);
 
             return jsonString;
         }catch(Exception e){
             e.printStackTrace();
-            return e.getMessage();
+            APIResponse.setCode(ResponseCodeEnum.GET_ALL_ADDRESSES.getCode());
+            APIResponse.setDescription(e.getMessage());
+            return JsonUtil.objectToJson(APIResponse);
         }
     };
 
     public static Route getCustomerAddressById = (request, response) -> {
+        APIResponseDTO APIResponse = new APIResponseDTO();
         try{
             Address address = new Address();
             String jsonString = new String();
@@ -73,7 +98,7 @@ public class AddressService {
             Jdbi jdbi = Connection.connect();
 
             address = jdbi.withExtension(AddressDao.class, dao -> {
-                return dao.getCustomerAddressById(customerId, addressId);
+                return dao.findCustomerAddressById(customerId, addressId);
             });
 
             jsonString = JsonUtil.objectToJson(address);
@@ -82,11 +107,14 @@ public class AddressService {
 
         }catch (Exception e){
             e.printStackTrace();
-            return e.getMessage();
+            APIResponse.setCode(ResponseCodeEnum.GET_ADDRESS.getCode());
+            APIResponse.setDescription(e.getMessage());
+            return JsonUtil.objectToJson(APIResponse);
         }
     };
 
     public static Route updateCustomerAddressById = (request, response) -> {
+        APIResponseDTO APIResponse = new APIResponseDTO();
         try {
             long customerId = Long.parseLong(request.params(":id"));
             long addressId = Long.parseLong(request.params(":address_id"));
@@ -96,10 +124,10 @@ public class AddressService {
             Jdbi jdbi = Connection.connect();
 
             //if the incoming address is the new main address
-            //set the current one to additional address
+            //set the current main one to non-main
             if(addressDTO.getMain()){
                 jdbi.withExtension(AddressDao.class, dao ->{
-                    dao.setMainAddressFalse(customerId);
+                    dao.setMainAddressFalseByCustomerId(customerId);
                     return 0;
                 });
             }
@@ -109,14 +137,19 @@ public class AddressService {
                 return 0;
             });
 
-            return "Endereço atualizado com sucesso.";
+            APIResponse.setCode(ResponseCodeEnum.UPDATE_ADDRESS.getCode());
+            APIResponse.setDescription(MessagesEnum.UPDATE_SUCCESS.getMessage());
+            return JsonUtil.objectToJson(APIResponse);
         }catch (Exception e){
             e.printStackTrace();
-            return e.getMessage();
+            APIResponse.setCode(ResponseCodeEnum.UPDATE_ADDRESS.getCode());
+            APIResponse.setDescription(e.getMessage());
+            return JsonUtil.objectToJson(APIResponse);
         }
     };
 
     public static Route deleteAddress = (request, response) -> {
+        APIResponseDTO APIResponse = new APIResponseDTO();
         try{
             long customerId = Long.parseLong(request.params(":id"));
             long addressId = Long.parseLong(request.params(":address_id"));
@@ -124,14 +157,18 @@ public class AddressService {
             Jdbi jdbi = Connection.connect();
 
             jdbi.withExtension(AddressDao.class, dao ->{
-                dao.delete(customerId, addressId);
+                dao.deleteById(customerId, addressId);
                 return 0;
             });
 
-            return "Endereço deletado com sucesso";
+            APIResponse.setCode(ResponseCodeEnum.DELETE_ADDRESS.getCode());
+            APIResponse.setDescription(MessagesEnum.DELETE_SUCCESS.getMessage());
+            return JsonUtil.objectToJson(APIResponse);
         }catch (Exception e){
             e.printStackTrace();
-            return e.getMessage();
+            APIResponse.setCode(ResponseCodeEnum.DELETE_ADDRESS.getCode());
+            APIResponse.setDescription(e.getMessage());
+            return JsonUtil.objectToJson(APIResponse);
         }
     };
 }
