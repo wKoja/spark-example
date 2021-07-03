@@ -1,0 +1,310 @@
+{
+	"info": {
+		"_postman_id": "27abe2be-5646-455a-b3a2-bc96727c26ca",
+		"name": "Spark Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Customers",
+			"item": [
+				{
+					"name": "Create Customer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Adalberto Silva\",\n  \"email\": \"suporte@previdenciarista.com\",\n  \"birthDate\": \"1989-10-03\",\n  \"cpf\": \"915.349.345-70\",\n  \"gender\": \"MASCULINO\",\n  \"address\": {\n    \"state\": \"SP\",\n    \"city\": \"São Paulo\",\n    \"neighborhood\": \"Tatuapé\",\n    \"zipCode\": \"06432-444\",\n    \"street\": \"Rua Moacir Franco\",\n    \"number\": \"133\",\n    \"additionalInformation\": \"Bloco B, Apto 33\",\n    \"main\": true\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/customers",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Customers List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/customers",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Florianopolis",
+									"disabled": true
+								},
+								{
+									"key": "state",
+									"value": "SC",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Customer By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/customers/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Adalberto Silva\",\n  \"email\": \"suporte@previdenciarista.com\",\n  \"birthDate\": \"1989-10-03\",\n  \"cpf\": \"915.249.340-70\",\n  \"gender\": \"MASCULINO\",\n  \"address\": {\n    \"state\": \"SP\",\n    \"city\": \"São Paulo\",\n    \"neighborhood\": \"Tatuapé\",\n    \"zipCode\": \"06432-444\",\n    \"street\": \"Rua Moacir Franco\",\n    \"number\": \"133\",\n    \"additionalInformation\": \"Bloco B, Apto 33\",\n    \"main\": true\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/customers/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/customers/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status is 200\", function (){",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Addresses",
+			"item": [
+				{
+					"name": "Addresses List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/customers/1/addresses",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Address By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/customers/1/addresses/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"1",
+								"addresses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Updated Address",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"state\": \"SP\",\n  \"city\": \"São Paulo\",\n  \"neighborhood\": \"Tatuapé\",\n  \"zipCode\": \"06432-444\",\n  \"street\": \"Rua Moacir Franco\",\n  \"number\": \"133\",\n  \"additionalInformation\": \"Bloco B, Apto 33\",\n  \"main\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/customers/5/addresses/4",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"5",
+								"addresses",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"state\": \"SP\",\n  \"city\": \"São Paulo\",\n  \"neighborhood\": \"Tatuapé\",\n  \"zipCode\": \"06432-444\",\n  \"street\": \"Rua Moacir Franco\",\n  \"number\": \"133\",\n  \"additionalInformation\": \"Bloco B, Apto 33\",\n  \"main\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/customers/999/addresses",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"999",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Address",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/customers/1/addresses/2",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"1",
+								"addresses",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
