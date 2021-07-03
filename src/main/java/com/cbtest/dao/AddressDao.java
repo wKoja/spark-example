@@ -26,10 +26,6 @@ public interface AddressDao {
     @RegisterBeanMapper(Address.class)
     Address findCustomerAddressById(@Bind("customerId") long customerId, @Bind("addressId") long addressId);
 
-    @SqlQuery("SELECT * FROM ADDRESSES WHERE customer_id = :customerId AND main = true")
-    @RegisterBeanMapper(Address.class)
-    Address findMainAddressByCustomerId(@Bind("customerId") long customerId);
-
     @SqlUpdate("UPDATE ADDRESSES SET main = false WHERE customer_id = :customerId AND main = true")
     @RegisterBeanMapper(Address.class)
     void setMainAddressFalseByCustomerId(@Bind("customerId") long customerId);

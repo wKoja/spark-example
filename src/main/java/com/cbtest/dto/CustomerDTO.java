@@ -1,9 +1,12 @@
 package com.cbtest.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class CustomerDTO {
     public long id;
     public String name;
     public String email;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     public String birthDate;
     public String cpf;
     public String gender;

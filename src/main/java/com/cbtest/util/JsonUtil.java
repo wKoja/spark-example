@@ -16,9 +16,8 @@ public class JsonUtil {
         final ObjectMapper mapper = new ObjectMapper();
 
         mapper.writeValue(output, list);
-        final byte[] data = output.toByteArray();
 
-        return new String(data);
+        return output.toString();
     }
 
     public static <T> String objectToJson(T object) throws IOException{
@@ -27,17 +26,14 @@ public class JsonUtil {
         final ObjectMapper mapper = new ObjectMapper();
 
         mapper.writeValue(output, object);
-        final byte[] data = output.toByteArray();
 
-        return new String(data);
+        return output.toString();
     }
 
     public static <T> T jsonToClass(String jsonString, Class<T> type) throws IOException{
         ObjectMapper mapper = new ObjectMapper();
 
-        T object = mapper.readValue(jsonString, type);
-
-        return object;
+        return mapper.readValue(jsonString, type);
     }
 
     //trying some stuff out, didn't actually put any work into this
@@ -46,20 +42,17 @@ public class JsonUtil {
         final ObjectMapper mapper = new ObjectMapper();
 
         mapper.writeValue(output, map);
-        final byte[] data = output.toByteArray();
 
-        return new String(data);
+        return output.toString();
     }
 
     public static <T> String getMapJson(QueryParamsMap queryMap) throws IOException{
         Map<String, String[]> map = queryMap.toMap();
-        List<Map<String, String[]>> mapList = new ArrayList<Map<String, String[]>>();
+        List<Map<String, String[]>> mapList = new ArrayList<>();
 
         mapList.add(map);
 
-        String mapJson = listToJson(mapList);
-
-        return mapJson;
+        return listToJson(mapList);
     }
 
 }

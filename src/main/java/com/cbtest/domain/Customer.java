@@ -1,5 +1,6 @@
 package com.cbtest.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.jdbi.v3.core.mapper.Nested;
 
 import java.sql.Timestamp;
@@ -11,6 +12,7 @@ public class Customer {
     String uuid;
     String name;
     String email;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     Date birthDate;
     String cpf;
     String gender;

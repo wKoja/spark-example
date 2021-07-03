@@ -16,13 +16,15 @@ import java.util.List;
 
 public interface CustomerDao{
 
-    @SqlQuery("SELECT CUSTOMERS.*, ADDRESSES.* FROM CUSTOMERS LEFT OUTER JOIN ADDRESSES on CUSTOMERS.id = ADDRESSES.customer_id")
+    //TODO: query params
+    @SqlQuery("SELECT CUSTOMERS.*, ADDRESSES.* FROM CUSTOMERS LEFT OUTER JOIN ADDRESSES ON CUSTOMERS.id = ADDRESSES.customer_id")
     @RegisterBeanMapper(Customer.class)
     @RegisterBeanMapper(Address.class)
     @UseRowReducer(CustomerAddressReducer.class)
     List<Customer> findAllCustomers();
 
-    @SqlQuery("SELECT CUSTOMERS.*, ADDRESSES.* FROM CUSTOMERS LEFT OUTER JOIN ADDRESSES ON CUSTOMERS.id= ADDRESSES.customer_id WHERE CUSTOMERS.id = ?")
+    @SqlQuery("SELECT CUSTOMERS.*, ADDRESSES.* FROM CUSTOMERS LEFT OUTER JOIN ADDRESSES" +
+            " ON CUSTOMERS.id= ADDRESSES.customer_id WHERE CUSTOMERS.id = ?")
     @RegisterBeanMapper(Customer.class)
     @RegisterBeanMapper(Address.class)
     @UseRowReducer(CustomerAddressReducer.class)
@@ -37,7 +39,8 @@ public interface CustomerDao{
     @GetGeneratedKeys("id")
     long insert(@BindFields CustomerDTO customer);
 
-    @SqlUpdate("UPDATE CUSTOMERS SET name = :name, email = :email, birth_date = :birthDate, cpf = :cpf, gender = :gender, updated_at = NOW() WHERE id = :id")
+    @SqlUpdate("UPDATE CUSTOMERS SET name = :name, email = :email, birth_date = :birthDate," +
+            " cpf = :cpf, gender = :gender, updated_at = NOW() WHERE id = :id")
     void updateById(@BindFields CustomerDTO customer, @Bind("id") long id);
 
     @SqlUpdate("DELETE FROM CUSTOMERS WHERE id = ?")

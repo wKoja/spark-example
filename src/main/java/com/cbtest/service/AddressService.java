@@ -11,11 +11,9 @@ import com.cbtest.enums.MessagesEnum;
 import com.cbtest.enums.ResponseCodeEnum;
 import com.cbtest.util.GeneralUtil;
 import com.cbtest.util.JsonUtil;
-import com.google.inject.Inject;
 import org.jdbi.v3.core.Jdbi;
 import spark.Route;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AddressService {
@@ -30,9 +28,7 @@ public class AddressService {
 
             Jdbi jdbi = Connection.connect();
 
-            Customer customer = jdbi.withExtension(CustomerDao.class, dao ->{
-                return dao.findById(customerId);
-            });
+            Customer customer = jdbi.withExtension(CustomerDao.class, dao -> dao.findById(customerId));
 
             if(customer == null || GeneralUtil.isEmpty(customer)){
                 APIResponse.setCode(ResponseCodeEnum.CREATE_ADDRESS.getCode());
@@ -49,9 +45,7 @@ public class AddressService {
                 });
             }
 
-            jdbi.withExtension(AddressDao.class, dao ->{
-                return dao.insert(addressDTO);
-            });
+            jdbi.withExtension(AddressDao.class, dao -> dao.insert(addressDTO));
             APIResponse.setCode(ResponseCodeEnum.CREATE_ADDRESS.getCode());
             APIResponse.setDescription(MessagesEnum.INSERT_SUCCESS.getMessage());
             return JsonUtil.objectToJson(APIResponse);
@@ -67,15 +61,13 @@ public class AddressService {
         APIResponseDTO APIResponse = new APIResponseDTO();
         try{
 
-            List<Address> addresses = new ArrayList<>();
-            String jsonString = new String();
+            List<Address> addresses;
+            String jsonString;
             long customerId = Long.parseLong(request.params(":id"));
 
             Jdbi jdbi = Connection.connect();
 
-            addresses = jdbi.withExtension(AddressDao.class, dao ->{
-                return dao.findAllCustomerAddresses(customerId);
-            });
+            addresses = jdbi.withExtension(AddressDao.class, dao -> dao.findAllCustomerAddresses(customerId));
             jsonString = JsonUtil.listToJson(addresses);
 
             return jsonString;
@@ -90,16 +82,14 @@ public class AddressService {
     public static Route getCustomerAddressById = (request, response) -> {
         APIResponseDTO APIResponse = new APIResponseDTO();
         try{
-            Address address = new Address();
-            String jsonString = new String();
+            Address address;
+            String jsonString;
             long customerId = Long.parseLong(request.params(":id"));
             long addressId = Long.parseLong(request.params(":address_id"));
 
             Jdbi jdbi = Connection.connect();
 
-            address = jdbi.withExtension(AddressDao.class, dao -> {
-                return dao.findCustomerAddressById(customerId, addressId);
-            });
+            address = jdbi.withExtension(AddressDao.class, dao -> dao.findCustomerAddressById(customerId, addressId));
 
             jsonString = JsonUtil.objectToJson(address);
 

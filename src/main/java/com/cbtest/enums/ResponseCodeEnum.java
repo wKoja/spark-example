@@ -18,7 +18,7 @@ public enum ResponseCodeEnum {
 
     private final String code;
 
-    private ResponseCodeEnum(String code){
+    ResponseCodeEnum(String code){
         this.code = code;
     }
     public String getCode() {

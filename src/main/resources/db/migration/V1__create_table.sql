@@ -29,7 +29,7 @@ insert into CUSTOMERS (id, uuid,
                        cpf, gender, created_at, updated_at)
 VALUES (null, UUID(),
         'William', 'email@teste.com',
-        DATE('1996-03-22'), '12345678910', 'M',
+        DATE('1996-03-22'), '123.456.789-10', 'M',
         timestamp(now()), null);
 
 insert into ADDRESSES (address_id, customer_id, state, city,

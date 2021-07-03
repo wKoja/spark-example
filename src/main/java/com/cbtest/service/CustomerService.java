@@ -13,13 +13,11 @@ import com.cbtest.enums.ResponseCodeEnum;
 import com.cbtest.util.GeneralUtil;
 import com.cbtest.util.JsonUtil;
 import org.jdbi.v3.core.Jdbi;
-import spark.QueryParamsMap;
 import spark.Route;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerService {
@@ -30,24 +28,20 @@ public class CustomerService {
             CustomerDTO dto = JsonUtil.jsonToClass(request.body(), CustomerDTO.class);
             AddressDTO addressDTO = dto.getAddressDTO();
 
-            APIResponse = runInsertValidations(dto);
+            APIResponse = this.runInsertValidations(dto);
             if(!GeneralUtil.isEmpty(APIResponse)){
                 return JsonUtil.objectToJson(APIResponse);
             }
 
             //insert customer
             Jdbi jdbi = Connection.connect();
-            long customerId = jdbi.withExtension(CustomerDao.class, dao ->{
-                return dao.insert(dto);
-            });
+            long customerId = jdbi.withExtension(CustomerDao.class, dao -> dao.insert(dto));
 
             addressDTO.setCustomerId(customerId);
             addressDTO.setMain(true);
 
             //then insert address
-            jdbi.withExtension(AddressDao.class, dao ->{
-                return dao.insert(addressDTO);
-            });
+            jdbi.withExtension(AddressDao.class, dao -> dao.insert(addressDTO));
 
             APIResponse.setCode(ResponseCodeEnum.CREATE_CUSTOMER.getCode());
             APIResponse.setDescription(MessagesEnum.INSERT_SUCCESS.getMessage());
@@ -64,19 +58,19 @@ public class CustomerService {
     public static Route getAllCustomers = (request, response) -> {
         APIResponseDTO APIResponse = new APIResponseDTO();
         try{
-            //TODO: dynamic queries for url parameters. Do it after finishing the endpoints
-            QueryParamsMap queryMap = request.queryMap();
-            if(request.queryMap().hasKeys()){
-                String mapJson = JsonUtil.getMapJson(request.queryMap());
-            }
+            //TODO: dynamic queries for parameters. Do it after finishing the endpoints
+//            QueryParamsMap queryMap = request.queryMap();
+//            if(request.queryMap().hasKeys()){
+//                String mapJson = JsonUtil.getMapJson(request.queryMap());
+//            }
+//            Map<String, String[]> map = queryMap.toMap();
 
-            List<Customer> customers = new ArrayList<Customer>();
-            String jsonString = new String();
+            List<Customer> customers;
+            String jsonString;
 
             Jdbi jdbi = Connection.connect();
-            customers = jdbi.withExtension(CustomerDao.class, dao -> {
-                return dao.findAllCustomers();
-            });
+            customers = jdbi.withExtension(CustomerDao.class, CustomerDao::findAllCustomers);
+
             jsonString = JsonUtil.listToJson(customers);
             return jsonString;
         } catch (Exception e){
@@ -91,14 +85,13 @@ public class CustomerService {
         APIResponseDTO APIResponse = new APIResponseDTO();
         try {
             long id = Long.parseLong(request.params(":id"));
-            String jsonString = new String();
-            Customer customer = new Customer();
+            String jsonString;
+            Customer customer;
 
             Jdbi jdbi = Connection.connect();
 
-            customer = jdbi.withExtension(CustomerDao.class, dao ->{
-                return dao.findById(id);
-            });
+            customer = jdbi.withExtension(CustomerDao.class, dao -> dao.findById(id));
+
             jsonString = JsonUtil.objectToJson(customer);
             return jsonString;
 
@@ -121,7 +114,7 @@ public class CustomerService {
             Jdbi jdbi = Connection.connect();
 
             //update customer
-            if(customerDTO != null && !GeneralUtil.isEmpty(customerDTO)){
+            if(!GeneralUtil.isEmpty(customerDTO)){
                 jdbi.withExtension(CustomerDao.class, dao ->{
                     dao.updateById(customerDTO, customerId);
                     return 0;
@@ -133,7 +126,7 @@ public class CustomerService {
             }
 
             //then update address
-            if(addressDTO != null && !GeneralUtil.isEmpty(addressDTO)){
+            if(!GeneralUtil.isEmpty(addressDTO)){
                 jdbi.withExtension(AddressDao.class, dao -> {
                     dao.updateByCustomerId(addressDTO, customerId);
                     return 0;
@@ -200,7 +193,7 @@ public class CustomerService {
             APIResponse.setCode(ResponseCodeEnum.CREATE_CUSTOMER.getCode());
             APIResponse.setDescription(MessagesEnum.INVALID_AGE.getMessage());
             return APIResponse;
-        };
+        }
 
         if(!this.validateCPF(dto.getCpf())){
             APIResponse.setCode(ResponseCodeEnum.CREATE_CUSTOMER.getCode());
@@ -214,11 +207,12 @@ public class CustomerService {
             return APIResponse;
         }
         return APIResponse;
-    };
+    }
 
     private boolean validateAge(String birthDateString){
         try{
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            birthDateString +=  " 00:00:00";
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime birthDate = LocalDateTime.parse(birthDateString, formatter);
             LocalDateTime now = LocalDateTime.now();
             long diffYears = (long) Math.floor(Duration.between(birthDate, now).toDays()/365);
@@ -227,34 +221,30 @@ public class CustomerService {
             }
         }catch (Exception e){
             e.printStackTrace();
-        };
+        }
         return true;
-    };
+    }
 
-    //sort of
+    //very simple CPF validation
     private boolean validateCPF(String cpf){
         long len = cpf.length();
         final long maxCPFMasked = LimitsEnum.MAX_CPF_SIZE_MASKED.value();
         final long maxCPF = LimitsEnum.MAX_CPF_SIZE_NOT_MASKED.value();
 
         try{
-            if(len > maxCPFMasked
-               || (len > maxCPF && len < maxCPFMasked)
-               || len < maxCPF){
-                return false;
-            }
-
-           return  true;
+            return len <= maxCPFMasked
+                    && (len <= maxCPF || len >= maxCPFMasked)
+                    && len >= maxCPF;
         }catch (Exception e){
             e.printStackTrace();
         }
         return false;
-    };
+    }
 
+    //check if a user with given CPF already exists
     private boolean validateExistingCustomer(String cpf){
         long len = cpf.length();
         final long maxCPFMasked = LimitsEnum.MAX_CPF_SIZE_MASKED.value();
-        final long maxCPF = LimitsEnum.MAX_CPF_SIZE_NOT_MASKED.value();
         try{
 
             Jdbi jdbi = Connection.connect();
@@ -262,21 +252,21 @@ public class CustomerService {
             Customer existingCustomer = jdbi.withExtension(CustomerDao.class, dao ->{
                 if(len == maxCPFMasked){
                     String filterdCPF = this.filterCPF(cpf);
-                    return dao.findByCPF(cpf);
+                    return dao.findByCPF(filterdCPF);
                 }
                 return dao.findByCPF(cpf);
             });
-            if(existingCustomer != null || !GeneralUtil.isEmpty(existingCustomer)) {
+            if(existingCustomer != null) {
                 return false;
             }
         } catch (Exception e){
             e.printStackTrace();
         }
         return true;
-    };
+    }
 
     private String filterCPF(String maskedCPF){
-        return maskedCPF.replaceAll("-", "").replaceAll(".","");
-    };
+        return maskedCPF.replaceAll("[^0-9]", "");
+    }
 }
 

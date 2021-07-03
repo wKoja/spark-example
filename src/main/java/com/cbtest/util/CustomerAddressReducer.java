@@ -22,7 +22,8 @@ public class CustomerAddressReducer implements LinkedHashMapRowReducer<Integer, 
             if(addressRow.getMain()){
                 c.setMainAddress(rowView.getRow(Address.class));
                 //clear() is removing addresses already set in the previous customer... what the fuck
-//                nonMainAddresses.clear();
+                //so I'll re-instantiate it instead
+                //nonMainAddresses.clear();
                 nonMainAddresses = new ArrayList<>();
             }else{
                 nonMainAddresses.add(rowView.getRow(Address.class));
