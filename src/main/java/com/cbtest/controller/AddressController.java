@@ -6,7 +6,7 @@ import static spark.Spark.*;
 
 public class AddressController {
 
-    public AddressController(final AddressService service){
+    public AddressController(AddressService service){
         post("/customers/:id/addresses", service.insertAddress);
         get("/customers/:id/addresses", service.getAllCustomerAddresses);
         get("/customers/:id/addresses/:address_id", service.getCustomerAddressById);

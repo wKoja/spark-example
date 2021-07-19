@@ -18,15 +18,14 @@ import java.util.List;
 
 public class AddressService {
 
+    private APIResponseDTO APIResponse;
+    private Jdbi jdbi = Connection.connect();
 
-    public static Route insertAddress = (request, response) -> {
-        APIResponseDTO APIResponse = new APIResponseDTO();
+    public Route insertAddress = (request, response) -> {
         try {
             long customerId = Long.parseLong(request.params(":id"));
             AddressDTO addressDTO = JsonUtil.jsonToClass(request.body(), AddressDTO.class);
             addressDTO.setCustomerId(customerId);
-
-            Jdbi jdbi = Connection.connect();
 
             Customer customer = jdbi.withExtension(CustomerDao.class, dao -> dao.findById(customerId));
 
@@ -57,15 +56,12 @@ public class AddressService {
         }
     };
 
-    public static Route getAllCustomerAddresses = (request, response) -> {
-        APIResponseDTO APIResponse = new APIResponseDTO();
+    public Route getAllCustomerAddresses = (request, response) -> {
         try{
 
             List<Address> addresses;
             String jsonString;
             long customerId = Long.parseLong(request.params(":id"));
-
-            Jdbi jdbi = Connection.connect();
 
             addresses = jdbi.withExtension(AddressDao.class, dao -> dao.findAllCustomerAddresses(customerId));
             jsonString = JsonUtil.listToJson(addresses);
@@ -79,15 +75,12 @@ public class AddressService {
         }
     };
 
-    public static Route getCustomerAddressById = (request, response) -> {
-        APIResponseDTO APIResponse = new APIResponseDTO();
+    public Route getCustomerAddressById = (request, response) -> {
         try{
             Address address;
             String jsonString;
             long customerId = Long.parseLong(request.params(":id"));
             long addressId = Long.parseLong(request.params(":address_id"));
-
-            Jdbi jdbi = Connection.connect();
 
             address = jdbi.withExtension(AddressDao.class, dao -> dao.findCustomerAddressById(customerId, addressId));
 
@@ -103,15 +96,12 @@ public class AddressService {
         }
     };
 
-    public static Route updateCustomerAddressById = (request, response) -> {
-        APIResponseDTO APIResponse = new APIResponseDTO();
+    public Route updateCustomerAddressById = (request, response) -> {
         try {
             long customerId = Long.parseLong(request.params(":id"));
             long addressId = Long.parseLong(request.params(":address_id"));
             AddressDTO addressDTO = JsonUtil.jsonToClass(request.body(), AddressDTO.class);
             addressDTO.setCustomerId(customerId);
-
-            Jdbi jdbi = Connection.connect();
 
             //if the incoming address is the new main address
             //set the current main one to non-main
@@ -138,13 +128,10 @@ public class AddressService {
         }
     };
 
-    public static Route deleteAddress = (request, response) -> {
-        APIResponseDTO APIResponse = new APIResponseDTO();
+    public Route deleteAddress = (request, response) -> {
         try{
             long customerId = Long.parseLong(request.params(":id"));
             long addressId = Long.parseLong(request.params(":address_id"));
-
-            Jdbi jdbi = Connection.connect();
 
             jdbi.withExtension(AddressDao.class, dao ->{
                 dao.deleteById(customerId, addressId);

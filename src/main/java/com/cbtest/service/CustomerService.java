@@ -13,28 +13,31 @@ import com.cbtest.enums.ResponseCodeEnum;
 import com.cbtest.util.GeneralUtil;
 import com.cbtest.util.JsonUtil;
 import org.jdbi.v3.core.Jdbi;
+import spark.QueryParamsMap;
 import spark.Route;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 public class CustomerService {
 
+    private APIResponseDTO APIResponse;
+    private final Jdbi jdbi = Connection.connect();
+
     public Route insertCustomer = (request, response) -> {
-        APIResponseDTO APIResponse = new APIResponseDTO();
         try{
             CustomerDTO dto = JsonUtil.jsonToClass(request.body(), CustomerDTO.class);
             AddressDTO addressDTO = dto.getAddressDTO();
 
             APIResponse = this.runInsertValidations(dto);
-            if(!GeneralUtil.isEmpty(APIResponse)){
+            if(APIResponse != null && !GeneralUtil.isEmpty(APIResponse)){
                 return JsonUtil.objectToJson(APIResponse);
             }
 
             //insert customer
-            Jdbi jdbi = Connection.connect();
             long customerId = jdbi.withExtension(CustomerDao.class, dao -> dao.insert(dto));
 
             addressDTO.setCustomerId(customerId);
@@ -55,20 +58,18 @@ public class CustomerService {
         }
     };
 
-    public static Route getAllCustomers = (request, response) -> {
-        APIResponseDTO APIResponse = new APIResponseDTO();
+    public Route getAllCustomers = (request, response) -> {
         try{
             //TODO: dynamic queries for parameters. Do it after finishing the endpoints
-//            QueryParamsMap queryMap = request.queryMap();
-//            if(request.queryMap().hasKeys()){
-//                String mapJson = JsonUtil.getMapJson(request.queryMap());
-//            }
-//            Map<String, String[]> map = queryMap.toMap();
+            QueryParamsMap queryMap = request.queryMap();
+            if(request.queryMap().hasKeys()){
+                String mapJson = JsonUtil.getMapJson(request.queryMap());
+            }
+            Map<String, String[]> map = queryMap.toMap();
 
             List<Customer> customers;
             String jsonString;
 
-            Jdbi jdbi = Connection.connect();
             customers = jdbi.withExtension(CustomerDao.class, CustomerDao::findAllCustomers);
 
             jsonString = JsonUtil.listToJson(customers);
@@ -81,14 +82,11 @@ public class CustomerService {
         }
     };
 
-    public static Route getCustomerById = (request, response) -> {
-        APIResponseDTO APIResponse = new APIResponseDTO();
+    public Route getCustomerById = (request, response) -> {
         try {
             long id = Long.parseLong(request.params(":id"));
             String jsonString;
             Customer customer;
-
-            Jdbi jdbi = Connection.connect();
 
             customer = jdbi.withExtension(CustomerDao.class, dao -> dao.findById(id));
 
@@ -104,14 +102,11 @@ public class CustomerService {
     };
 
     public Route updateCustomer = (request, response) -> {
-        APIResponseDTO APIResponse = new APIResponseDTO();
         try{
             long customerId = Integer.parseInt(request.params(":id"));
             CustomerDTO customerDTO = JsonUtil.jsonToClass(request.body(), CustomerDTO.class);
             AddressDTO addressDTO = customerDTO.getAddressDTO();
             addressDTO.setCustomerId(customerId);
-
-            Jdbi jdbi = Connection.connect();
 
             //update customer
             if(!GeneralUtil.isEmpty(customerDTO)){
@@ -144,12 +139,9 @@ public class CustomerService {
         }
     };
 
-    public static Route deleteCustomer = (request, response) -> {
-        APIResponseDTO APIResponse = new APIResponseDTO();
+    public Route deleteCustomer = (request, response) -> {
         try{
             long customerId = Integer.parseInt(request.params(":id"));
-
-            Jdbi jdbi = Connection.connect();
 
             jdbi.withExtension(AddressDao.class, dao ->{
                 dao.deleteAllByCustomerId(customerId);
@@ -175,8 +167,6 @@ public class CustomerService {
     //validations
 
     private APIResponseDTO runInsertValidations(CustomerDTO dto){
-        APIResponseDTO APIResponse = new APIResponseDTO();
-
         if(dto == null || GeneralUtil.isEmpty(dto)){
             APIResponse.setCode(ResponseCodeEnum.CREATE_CUSTOMER.getCode());
             APIResponse.setDescription(MessagesEnum.NO_CUSTOMER.getMessage());
@@ -246,8 +236,6 @@ public class CustomerService {
         long len = cpf.length();
         final long maxCPFMasked = LimitsEnum.MAX_CPF_SIZE_MASKED.value();
         try{
-
-            Jdbi jdbi = Connection.connect();
 
             Customer existingCustomer = jdbi.withExtension(CustomerDao.class, dao ->{
                 if(len == maxCPFMasked){
